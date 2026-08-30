@@ -1,0 +1,25 @@
+[project]
+name = "Transcription Helper"
+version = "0.1.0"
+description = "Tool for converting audio files into a Music XML lead sheet"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "figures>=0.3.16",
+    "h5py>=2.9.0",
+    "jams>=0.3.4",
+    "joblib>=0.13.2",
+    "librosa>=0.7.2",
+    "madmom>=0.16.1",
+    "matplotlib>=2.2.4",
+    "mir-eval>=0.5",
+    "numpy<=1.20",
+    "pretty-midi>=0.2.9",
+    "pumpp>=0.5.0",
+    "pydub>=0.23.1",
+    "scikit-learn>=0.23.2",
+    "setuptools<=67.2.0",
+    "torch>=1.4.0",
+]
+[tool.uv.extra-build-dependencies]
+madmom = ["cython", "numpy"]

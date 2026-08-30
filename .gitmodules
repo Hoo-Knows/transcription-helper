@@ -1,0 +1,3 @@
+[submodule "chord_recognition_module"]
+	path = chord_recognition_module
+	url = https://github.com/Hoo-Knows/large-vocabulary-chord-recognition
