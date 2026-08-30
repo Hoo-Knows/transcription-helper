@@ -1,5 +1,5 @@
 [project]
-name = "Transcription Helper"
+name = "transcription-helper"
 version = "0.1.0"
 description = "Tool for converting audio files into a Music XML lead sheet"
 readme = "README.md"
