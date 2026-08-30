@@ -13,6 +13,7 @@ dependencies = [
     "madmom>=0.16.1",
     "matplotlib>=2.2.4",
     "mir-eval>=0.5",
+    "musicscore>=2.6.0",
     "numpy<=1.20",
     "pretty-midi>=0.2.9",
     "pumpp>=0.5.0",

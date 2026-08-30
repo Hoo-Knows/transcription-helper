@@ -1559,6 +1559,30 @@ wheels = [
 ]
 
 [[package]]
+name = "musicscore"
+version = "2.6.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "musicxml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/03/b5/fe647e722a53095eef3c5d1404580b0876bd3b1702fa2988525323e945a3/musicscore-2.6.0.tar.gz", hash = "sha256:8fce9db1fa62aec137b5879f4c4ba22de223c722c2f1ce560ac806f205b9e597", size = 649136, upload-time = "2025-02-11T06:56:38.689Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/28/58/fb6aa6839405ce10950f4bda06026c7f0a4c5837a4d467cea23b002efb8e/musicscore-2.6.0-py3-none-any.whl", hash = "sha256:e35f7b91ad26490ad7d848754a7958636455da69ff4c8696866ab4861bde0312", size = 817469, upload-time = "2025-02-11T06:56:35.575Z" },
+]
+
+[[package]]
+name = "musicxml"
+version = "1.6.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "verysimpletree" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/bf/89/bff27f31165a2b1ebdbf87b519666302bff26bdffa47393363e923c058bb/musicxml-1.6.1.tar.gz", hash = "sha256:a90e5ef8512c40af9f65ab8d0627afa19ef4a26aac97052287a6f0b2f9db7ae9", size = 873137, upload-time = "2024-12-24T09:37:16.389Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f2/70/b0eb5a86e2ecc91456bb863880e47a3e539e3f515d4c9b4b3c884e5510db/musicxml-1.6.1-py3-none-any.whl", hash = "sha256:43ad9607453a0e91585b6c18a45dd1ba9681e1317b5133e34b5195f18d513d5a", size = 978149, upload-time = "2024-12-24T09:37:13.714Z" },
+]
+
+[[package]]
 name = "networkx"
 version = "3.2.1"
 source = { registry = "https://pypi.org/simple" }
@@ -3037,6 +3061,7 @@ dependencies = [
     { name = "madmom" },
     { name = "matplotlib" },
     { name = "mir-eval" },
+    { name = "musicscore" },
     { name = "numpy" },
     { name = "pretty-midi" },
     { name = "pumpp" },
@@ -3056,6 +3081,7 @@ requires-dist = [
     { name = "madmom", specifier = ">=0.16.1" },
     { name = "matplotlib", specifier = ">=2.2.4" },
     { name = "mir-eval", specifier = ">=0.5" },
+    { name = "musicscore", specifier = ">=2.6.0" },
     { name = "numpy", specifier = "<=1.20" },
     { name = "pretty-midi", specifier = ">=0.2.9" },
     { name = "pumpp", specifier = ">=0.5.0" },
@@ -3125,6 +3151,15 @@ resolution-markers = [
 sdist = { url = "https://files.pythonhosted.org/packages/53/0c/06f8b233b8fd13b9e5ee11424ef85419ba0d8ba0b3138bf360be2ff56953/urllib3-2.7.0.tar.gz", hash = "sha256:231e0ec3b63ceb14667c67be60f2f2c40a518cb38b03af60abc813da26505f4c", size = 433602, upload-time = "2026-05-07T16:13:18.596Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7f/3e/5db95bcf282c52709639744ca2a8b149baccf648e39c8cc87553df9eae0c/urllib3-2.7.0-py3-none-any.whl", hash = "sha256:9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897", size = 131087, upload-time = "2026-05-07T16:13:17.151Z" },
+]
+
+[[package]]
+name = "verysimpletree"
+version = "1.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9c/20/a45a7e9beba4ecc9b1f3a5c7a7cea96780e483a52846d9b0ea0f86e0c34a/verysimpletree-1.2.1.tar.gz", hash = "sha256:7c00da22b427f7d6a1a03053b660cada1a0750d823f6fd08f7308c312187aa1f", size = 9909, upload-time = "2024-12-31T13:28:53.015Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5f/e7/00d75a4c266b83e0a2ac4d2747edd0e281cf8627027b3bffb4467d1ab49b/verysimpletree-1.2.1-py3-none-any.whl", hash = "sha256:993e63df314a69de0a138cc5a3d7610cf2af8cfae082f8348a2673fe7b85a9b8", size = 10863, upload-time = "2024-12-31T13:28:50.758Z" },
 ]
 
 [[package]]
