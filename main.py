@@ -8,7 +8,7 @@ import json
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print('Usage: main.py path_to_audio_file [path_to_output_file]')
+        print('Usage: main.py path_to_audio_file path_to_output_file')
         exit(0)
 
     # ISMIR2019-Large-Vocabulary-Chord-Recognition for chord recognition
