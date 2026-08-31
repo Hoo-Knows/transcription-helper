@@ -14,12 +14,12 @@ from fractions import Fraction
 import json
 import sys
 
-MAJOR_TO_FIFTHS = ['C major',  'G major',  'D major',  'A major',
-                   'E major',  'B major',  'F# major', 'Db major',
-                   'Ab major', 'Eb major', 'Bb major', 'F major']
-MINOR_TO_FIFTHS = ['A minor',  'E minor',  'B minor',  'F# minor',
-                   'C# minor', 'G# minor', 'D# minor', 'Bb minor',
-                   'F minor',  'C minor',  'G minor',  'D minor']
+KEY_TO_FIFTHS = {
+    'C major': 0, 'G major': 1, 'D major': 2, 'A major': 3, 'E major': 4, 'B major': 5, 'F# major': 6,
+    'Db major': -5, 'Ab major': -4, 'Eb major': -3, 'Bb major': -2, 'F major': -1,
+    'A minor': 0, 'E minor': 1, 'B minor': 2, 'F# minor': 3, 'C# minor': 4, 'G# minor': 5, 'D# minor': 6,
+    'Bb minor': -5, 'F minor': -4, 'C minor': -3, 'G minor': -2, 'D minor': -1
+}
 
 def json_to_musicxml(json_path, musicxml_name):
     file = open(json_path, "r")
@@ -40,7 +40,7 @@ def json_to_musicxml(json_path, musicxml_name):
 
         # estimate note duration by snapping start and end timestamps to closest beat
         snapped_start = beats[max(0, bisect_right(beats, start) - 1)]
-        snapped_start_back = beats[bisect_right(beats, start)]
+        snapped_start_back = beats[min(len(beats) - 1, bisect_right(beats, start))]
         if snapped_start_back - start < start - snapped_start:
             snapped_start = snapped_start_back
         
@@ -64,9 +64,8 @@ def json_to_musicxml(json_path, musicxml_name):
     # score setup
     s = Score(title=musicxml_name)
     p = s.add_child(Part("P1", name="P1"))
-    fifths = MAJOR_TO_FIFTHS.index(key) if "major" in key else MINOR_TO_FIFTHS.index(key)
     m = p.add_child(Measure(number=0))
-    m.key = Key(fifths)
+    m.key = Key(KEY_TO_FIFTHS[key])
     st = m.add_child(Staff(number=1, clef=TrebleClef()))
     st = m.add_child(Staff(number=2, clef=BassClef()))
     st.add_voice(voice_number=1)
