@@ -61,13 +61,20 @@ def json_to_musicxml(json_path, musicxml_name):
     s = Score(title=musicxml_name)
     p = s.add_child(Part("P1", name="P1"))
     m = p.add_child(Measure(number=0))
-    m.key = Key(KEY_TO_FIFTHS[key])
+    fifths = KEY_TO_FIFTHS[key]
+    m.key = Key(fifths)
     st = m.add_child(Staff(number=1, clef=TrebleClef()))
     st.add_voice(voice_number=1)
     st = m.add_child(Staff(number=2, clef=BassClef()))
     st.add_voice(voice_number=1)
 
     added_tempo = False
+    if fifths > 0:
+        accidental_mode = "sharp"
+    elif fifths < 0:
+        accidental_mode = "flat"
+    else:
+        accidental_mode = "standard"
 
     # insert rests if first chord doesn't start on beat 1
     if len(chord_durations) > 0:
@@ -92,11 +99,40 @@ def json_to_musicxml(json_path, musicxml_name):
             chord.metronome = Metronome(round(tempo), beat_unit=1)
             added_tempo = True
 
+        for pitch in chord.midis:
+            pitch.accidental.mode = accidental_mode
+
         p.add_chord(chord, staff_number=2, voice_number=1)
 
     # fix formatting on the top staff
-    for m in cast(List[Measure], p.get_children()):
+    for m in p.get_children():
         m.get_staff(staff_number=1).fill_with_rests()
+
+    # hide accidentals supplied by the key signature
+    if fifths > 0:
+        key_accidentals = {step: 1 for step in "FCGDAEB"[:fifths]}
+    elif fifths < 0:
+        key_accidentals = {step: -1 for step in "BEADGCF"[:-fifths]}
+    else:
+        key_accidentals = {}
+
+    for m in cast(List[Measure], p.get_children()):
+        for staff in m.get_children():
+            accidental_state = {} # track accidental changes within measure
+            for score_chord in staff.get_chords():
+                if score_chord.is_rest:
+                    continue
+
+                for pitch in score_chord.midis:
+                    if pitch.is_tied_to_previous:
+                        pitch.accidental.show = False
+                        continue
+
+                    step, alter, octave = pitch.accidental.get_pitch_parameters()
+                    state_key = (step, octave)
+                    current_alter = accidental_state.get(state_key, key_accidentals.get(step, 0))
+                    pitch.accidental.show = alter != current_alter
+                    accidental_state[state_key] = alter
     
     xml_path = Path(__file__).parent.joinpath(musicxml_name).with_suffix('.musicxml')
     s.export_xml(xml_path)
