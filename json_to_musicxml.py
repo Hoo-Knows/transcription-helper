@@ -86,7 +86,7 @@ def json_to_musicxml(json_path, musicxml_name):
                 chord.metronome = Metronome(round(tempo), beat_unit=1)
                 added_tempo = True
 
-            p.add_chord(Chord(0, quarter_duration=initial_rest), staff_number=2, voice_number=1)
+            p.add_chord(chord, staff_number=2, voice_number=1)
 
     # adding chords
     for chord_name, duration, _ in chord_durations:
