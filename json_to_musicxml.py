@@ -8,9 +8,9 @@ from musicscore.score import Score
 from musicscore.staff import Staff
 from musicscore.clef import TrebleClef, BassClef
 from musicscore.key import Key
+from musicscore.metronome import Metronome
 
 from typing import List, cast
-from fractions import Fraction
 import json
 import sys
 
@@ -39,27 +39,23 @@ def json_to_musicxml(json_path, musicxml_name):
         start, end, chord = row
 
         # estimate note duration by snapping start and end timestamps to closest beat
-        snapped_start = beats[max(0, bisect_right(beats, start) - 1)]
-        snapped_start_back = beats[min(len(beats) - 1, bisect_right(beats, start))]
-        if snapped_start_back - start < start - snapped_start:
+        snapped_start = max(0, bisect_right(beats, start) - 1)
+        snapped_start_back = min(len(beats) - 1, bisect_right(beats, start))
+        if beats[snapped_start_back] - start < start - beats[snapped_start]:
             snapped_start = snapped_start_back
         
-        snapped_end = beats[bisect_right(beats, end) - 1]
-        snapped_end_back = beats[min(len(beats) - 1, bisect_right(beats, end))]
-        if snapped_end_back - end < end - snapped_end:
+        snapped_end = max(0, bisect_right(beats, end) - 1)
+        snapped_end_back = min(len(beats) - 1, bisect_right(beats, end))
+        if beats[snapped_end_back] - end < end - beats[snapped_end]:
             snapped_end = snapped_end_back
 
         # ignore pickups
-        measure = bisect_right(downbeats, snapped_start) - 1
-        if measure < 0: # ignore pickups for now
+        measure = bisect_right(downbeats, beats[snapped_start]) - 1
+        if measure < 0:
             continue
 
-        # TODO: actually add subdivisions
-        subdivisions = 4 # 16ths
-        numerator = round((snapped_end - snapped_start) / 60 * tempo * subdivisions)
-        quarter_duration = Fraction(numerator, subdivisions)
-        
-        chord_durations.append([chord, quarter_duration])
+        quarter_duration = snapped_end - snapped_start
+        chord_durations.append([chord, quarter_duration, snapped_start])
 
     # score setup
     s = Score(title=musicxml_name)
@@ -67,21 +63,40 @@ def json_to_musicxml(json_path, musicxml_name):
     m = p.add_child(Measure(number=0))
     m.key = Key(KEY_TO_FIFTHS[key])
     st = m.add_child(Staff(number=1, clef=TrebleClef()))
+    st.add_voice(voice_number=1)
     st = m.add_child(Staff(number=2, clef=BassClef()))
     st.add_voice(voice_number=1)
 
+    added_tempo = False
+
+    # insert rests if first chord doesn't start on beat 1
+    if len(chord_durations) > 0:
+        # diff between starting beat of first chord and first downbeat becomes initial rest in quarter notes
+        initial_rest = chord_durations[0][2] - beats.index(downbeats[0])
+        if initial_rest > 0:
+            chord = Chord(0, quarter_duration=initial_rest)
+            if not added_tempo:
+                chord.metronome = Metronome(round(tempo), beat_unit=1)
+                added_tempo = True
+
+            p.add_chord(Chord(0, quarter_duration=initial_rest), staff_number=2, voice_number=1)
+
     # adding chords
-    for chord_name, duration in chord_durations:
+    for chord_name, duration, _ in chord_durations:
         from chord_recognition_module import ComplexChord
         midi = cast(List, ComplexChord(chord_name).to_midi())
+        midi = [n - 12 for n in midi] # adjust down an octave so everything is readable in bass clef
 
-        chord = (
-            Chord(midi, quarter_duration=duration)
-            if midi
-            else Chord(0, quarter_duration=duration)
-        )
+        chord = Chord(midi if midi else 0, quarter_duration=duration)
+        if not added_tempo:
+            chord.metronome = Metronome(round(tempo), beat_unit=1)
+            added_tempo = True
 
         p.add_chord(chord, staff_number=2, voice_number=1)
+
+    # fix formatting on the top staff
+    for m in cast(List[Measure], p.get_children()):
+        m.get_staff(staff_number=1).fill_with_rests()
     
     xml_path = Path(__file__).parent.joinpath(musicxml_name).with_suffix('.musicxml')
     s.export_xml(xml_path)
